@@ -26,3 +26,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::get('/', function () {
     return view('pages.auth.auth-login');
 })->middleware('guest');
+
+Route::get('/baru', function () {
+    return view('baru.pages.index');
+});
+
+Route::get('/member', function () {
+    return view('baru.pages.member');
+});
