@@ -29,8 +29,26 @@ Route::get('/', function () {
 
 Route::get('/baru', function () {
     return view('baru.pages.index');
-});
+})->name('baruz');
 
 Route::get('/member', function () {
     return view('baru.pages.member');
-});
+})->name('memberz');
+
+Route::get('/banner', function () {
+    return view('baru.pages.banner');
+})->name('bannerz');
+
+Route::get('/project', function () {
+    return view('baru.pages.project');
+})->name('projectz');
+
+Route::get('/mitra', function () {
+    return view('baru.pages.mitra');
+})->name('mitraz');
+
+Route::get('/create-member', function () {
+    return view('baru.pages.create');
+})->name('create');
+
+
