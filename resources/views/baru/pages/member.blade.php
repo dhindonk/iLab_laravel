@@ -19,7 +19,7 @@
                                     <table class="table datatables" id="dataTable-1">
                                         <thead>
                                             <tr>
-                                                <th>No</th>
+                                                <th style="width: 10px">No</th>
                                                 <th>Foto Profile</th>
                                                 <th>Fullname</th>
                                                 <th>Email</th>
@@ -37,16 +37,20 @@
                                                 <td>Imani Lara</td>
                                                 <td>(478) 446-9234</td>
                                                 <td>Asset Management</td>
-                                                <td>Borland</td>
-                                                <td><button class="btn btn-sm dropdown-toggle more-horizontal"
-                                                        type="button" data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <span class="text-muted sr-only">Action</span>
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#">Edit</a>
-                                                        <a class="dropdown-item" href="#">Remove</a>
-                                                        <a class="dropdown-item" href="#">Assign</a>
+                                                <td> <span class="badge badge-success">✓ Verified</span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-center">
+                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-edit"></i>
+                                                        </a>
+                                                        <form action="" method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
+                                                                <i class="fe fe-trash-2"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -58,16 +62,23 @@
                                                 <td>Walter Sawyer</td>
                                                 <td>(671) 969-1704</td>
                                                 <td>Tech Support</td>
-                                                <td>Macromedia</td>
-                                                <td><button class="btn btn-sm dropdown-toggle more-horizontal"
-                                                        type="button" data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <span class="text-muted sr-only">Action</span>
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#">Edit</a>
-                                                        <a class="dropdown-item" href="#">Remove</a>
-                                                        <a class="dropdown-item" href="#">Assign</a>
+                                                <td> <span class="badge badge-danger">✗ Not Verified</span>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-center">
+                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-edit"></i>
+                                                        </a>
+                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-check"></i>
+                                                        </a>
+                                                        <form action="" method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
+                                                                <i class="fe fe-trash-2"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -84,6 +95,9 @@
                                                     <div class="d-flex justify-content-center">
                                                         <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
                                                             <i class="fe fe-edit"></i>
+                                                        </a>
+                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-check"></i>
                                                         </a>
                                                         <form action="" method="POST" class="d-inline">
                                                             @csrf
@@ -104,15 +118,21 @@
                                                 <td>(216) 946-1119</td>
                                                 <td>Payroll</td>
                                                 <td>Microsoft</td>
-                                                <td><button class="btn btn-sm dropdown-toggle more-horizontal"
-                                                        type="button" data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <span class="text-muted sr-only">Action</span>
-                                                    </button>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" href="#">Edit</a>
-                                                        <a class="dropdown-item" href="#">Remove</a>
-                                                        <a class="dropdown-item" href="#">Assign</a>
+                                                <td>
+                                                    <div class="d-flex justify-content-center">
+                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-edit"></i>
+                                                        </a>
+                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-check"></i>
+                                                        </a>
+                                                        <form action="" method="POST" class="d-inline">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
+                                                                <i class="fe fe-trash-2"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </td>
                                             </tr>
