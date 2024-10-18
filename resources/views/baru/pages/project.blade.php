@@ -16,92 +16,35 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 10px">No</th>
-                                                <th>Email</th>
-                                                <th>University Name</th>
-                                                <th>Verified</th>
+                                                <th>Nama Proyek</th>
+                                                <th>Ketua Proyek</th>
+                                                <th>Progress (%)</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach ($projects as $project)
                                             <tr>
                                                 <td>
-                                                    1
+                                                    {{ $loop->iteration }}
                                                 </td>
-                                                <td>(478) 446-9234</td>
-                                                <td>Asset Management</td>
-                                                <td>Borland</td>
+                                                <td>{{ $project->name }}</td>
+                                                <td>{{ $project->creator->full_name }}</td>
+                                                <td>                                                    @php
+                                                    $totalJobs = count(json_decode($project->list_job));
+                                                    $completedJobs = $project->progress
+                                                        ->where('is_completed', true)
+                                                        ->count();
+                                                    $progress =
+                                                        $totalJobs > 0 ? ($completedJobs / $totalJobs) * 100 : 0;
+                                                @endphp
+                                                {{ number_format($progress, 2) }}%</td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
+                                                        <a href='{{ route('view.project', $project->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-eye"></i>
                                                         </a>
-                                                        <form action="" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    2
-                                                </td>
-                                                <td>(671) 969-1704</td>
-                                                <td>Tech Support</td>
-                                                <td>Macromedia</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                        <form action="" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    3
-                                                </td>
-                                                <td>(803) 792-2559</td>
-                                                <td>Human Resources</td>
-                                                <td>Sibelius</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                        <form action="" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    4
-                                                </td>
-                                                <td>(216) 946-1119</td>
-                                                <td>Payroll</td>
-                                                <td>Microsoft</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                        <form action="" method="POST" class="d-inline">
+                                                        <form action="{{ route('del_project', $project->id) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button class="btn btn-sm btn-dark btn-icon" type="submit">
@@ -120,131 +63,5 @@
                 </div> <!-- .col-12 -->
             </div> <!-- .row -->
         </div> <!-- .container-fluid -->
-        <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-sm" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="defaultModalLabel">Notifications</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="list-group list-group-flush my-n3">
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-box fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Package has uploaded successfull</strong></small>
-                                        <div class="my-0 text-muted small">Package is zipped and uploaded</div>
-                                        <small class="badge badge-pill badge-light text-muted">1m ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-download fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Widgets are updated successfull</strong></small>
-                                        <div class="my-0 text-muted small">Just create new layout Index, form, table</div>
-                                        <small class="badge badge-pill badge-light text-muted">2m ago</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-inbox fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Notifications have been sent</strong></small>
-                                        <div class="my-0 text-muted small">Fusce dapibus, tellus ac cursus commodo</div>
-                                        <small class="badge badge-pill badge-light text-muted">30m ago</small>
-                                    </div>
-                                </div> <!-- / .row -->
-                            </div>
-                            <div class="list-group-item bg-transparent">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        <span class="fe fe-link fe-24"></span>
-                                    </div>
-                                    <div class="col">
-                                        <small><strong>Link was attached to menu</strong></small>
-                                        <div class="my-0 text-muted small">New layout has been attached to the menu</div>
-                                        <small class="badge badge-pill badge-light text-muted">1h ago</small>
-                                    </div>
-                                </div>
-                            </div> <!-- / .row -->
-                        </div> <!-- / .list-group -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Clear
-                            All</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade modal-shortcut modal-slide" tabindex="-1" role="dialog"
-            aria-labelledby="defaultModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="defaultModalLabel">Shortcuts</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body px-5">
-                        <div class="row align-items-center">
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-success justify-content-center">
-                                    <i class="fe fe-cpu fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Control area</p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-activity fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Activity</p>
-                            </div>
-                        </div>
-                        <div class="row align-items-center">
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-droplet fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Droplet</p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-upload-cloud fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Upload</p>
-                            </div>
-                        </div>
-                        <div class="row align-items-center">
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-users fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Users</p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <div class="squircle bg-primary justify-content-center">
-                                    <i class="fe fe-settings fe-32 align-self-center text-white"></i>
-                                </div>
-                                <p>Settings</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
 @endsection

@@ -20,24 +20,27 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 10px">No</th>
-                                                <th>Verified</th>
-                                                <th>Verified</th>
+                                                <th>Name</th>
+                                                <th>Image</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach ($banners as $banner )
+
+                                            @endforeach
                                             <tr>
                                                 <td>
-                                                    1
+                                                    {{ $loop->iteration }}
                                                 </td>
-                                                <td>Borland</td>
-                                                <td>Borland</td>
+                                                <td>{{ $banner->name }}</td>
+                                                <td><img src=" {{$banner->image}}" alt="{{ $banner->name }}" width="100"></td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                        <a href='{{ route('banners.edit', $banner->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
                                                             <i class="fe fe-edit"></i>
                                                         </a>
-                                                        <form action="" method="POST" class="d-inline">
+                                                        <form action="{{ route('banners.destroy', $banner->id) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button class="btn btn-sm btn-dark btn-icon" type="submit">
@@ -47,69 +50,7 @@
                                                     </div>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>
-                                                    2
-                                                </td>
-                                                <td>Macromedia</td>
-                                                <td>Macromedia</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                        <form action="" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    3
-                                                </td>
-                                                <td>Sibelius</td>
-                                                <td>Sibelius</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                        <form action="" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    4
-                                                </td>
-                                                <td>Microsoft</td>
-                                                <td>Microsoft</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                        <form action="" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>

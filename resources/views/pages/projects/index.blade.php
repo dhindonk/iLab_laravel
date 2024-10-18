@@ -1,95 +1,68 @@
-@extends('layouts.app')
-
-@section('title', 'Daftar Proyek')
-
-@push('style')
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
-@endpush
-
-@section('main')
-    <div class="main-content">
-        <section class="section">
-            <div class="section-header">
-                <h1>Daftar Proyek</h1>
-
-                <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="#">Dashboard</a></div>
-                    <div class="breadcrumb-item"><a href="#">Proyek</a></div>
-                    <div class="breadcrumb-item">Semua Proyek</div>
-                </div>
-            </div>
-
-            <div class="section-body">
-                <h2 class="section-title">Proyek</h2>
-                <p class="section-lead">Kelola semua proyek dan lihat progressnya.</p>
-
-                <div class="row">
-                    <div class="col-12">
-                        @include('layouts.alert')
-                    </div>
-                </div>
-
-                <div class="row mt-4">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table-striped table">
-                                        <tr>
-                                            <th>Nama Proyek</th>
-                                            <th>Ketua Proyek</th>
-                                            <th>Progress (%)</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                        @foreach ($projects as $project)
+@extends('baru.layouts.main')
+@section('content')
+    <main role="main" class="main-content">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <h2 class="mb-2 page-title">Project</h2>
+                    <p class="card-text">Kelola semua proyek dan lihat progressnya.                    </p>
+                    <div class="row my-4">
+                        <!-- Small table -->
+                        <div class="col-md-12">
+                            <div class="card shadow">
+                                <div class="card-body">
+                                    <!-- table -->
+                                    <table class="table datatables" id="dataTable-1">
+                                        <thead>
                                             <tr>
+                                                <th style="width: 10px">No</th>
+                                                <th>Nama Proyek</th>
+                                                <th>Ketua Proyek</th>
+                                                <th>Progress (%)</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($projects as $project)
+                                            <tr>
+                                                <td>
+                                                    {{ $loop->iteration }}
+                                                </td>
                                                 <td>{{ $project->name }}</td>
                                                 <td>{{ $project->creator->full_name }}</td>
-                                                <td>
-                                                    @php
-                                                        $totalJobs = count(json_decode($project->list_job));
-                                                        $completedJobs = $project->progress
-                                                            ->where('is_completed', true)
-                                                            ->count();
-                                                        $progress =
-                                                            $totalJobs > 0 ? ($completedJobs / $totalJobs) * 100 : 0;
-                                                    @endphp
-                                                    {{ number_format($progress, 2) }}%
-                                                </td>
+                                                <td>                                                    @php
+                                                    $totalJobs = count(json_decode($project->list_job));
+                                                    $completedJobs = $project->progress
+                                                        ->where('is_completed', true)
+                                                        ->count();
+                                                    $progress =
+                                                        $totalJobs > 0 ? ($completedJobs / $totalJobs) * 100 : 0;
+                                                @endphp
+                                                {{ number_format($progress, 2) }}%</td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
-
-                                                        <a href="{{ route('view.project', $project->id) }}"
-                                                            class="btn btn-sm btn-primary">
-                                                            <i class="fas fa-eye"></i>
+                                                        <a href='{{ route('view.project', $project->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                            <i class="fe fe-eye"></i>
                                                         </a>
-                                                        <form action="{{ route('del_project', $project->id) }}"
-                                                            method="POST" class="ml-2"
-                                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus project ini?');">
+                                                        <form action="{{ route('del_project', $project->id) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button class="btn btn-sm btn-danger btn-icon" type="submit">
-                                                                <i class="fas fa-trash"></i>
+                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
+                                                                <i class="fe fe-trash-2"></i>
                                                             </button>
                                                         </form>
                                                     </div>
                                                 </td>
-
                                             </tr>
-                                        @endforeach
+                                            @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </div>
+                        </div> <!-- simple table -->
+                    </div> <!-- end section -->
+                </div> <!-- .col-12 -->
+            </div> <!-- .row -->
+        </div> <!-- .container-fluid -->
+    </main>
 @endsection
-
-@push('scripts')
-    <!-- JS Libraies -->
-    <script src="{{ asset('library/selectric/public/jquery.selectric.min.js') }}"></script>
-@endpush

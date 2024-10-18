@@ -1,13 +1,5 @@
-@extends('layouts.app')
-
-@section('title', 'Edit Mitra')
-
-@push('style')
-    <!-- CSS Libraries -->
-    <link rel="stylesheet" href="{{ asset('library/selectric/public/selectric.css') }}">
-@endpush
-
-@section('main')
+@extends('baru.layouts.main')
+@section('content')
     <div class="main-content">
         <section class="section">
             <div class="section-header">
@@ -36,8 +28,3 @@
         </section>
     </div>
 @endsection
-
-@push('scripts')
-    <!-- JS Libraies -->
-    <script src="{{ asset('library/selectric/public/jquery.selectric.min.js') }}"></script>
-@endpush

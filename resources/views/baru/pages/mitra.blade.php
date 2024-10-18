@@ -7,8 +7,7 @@
                     <h2 class="mb-2 page-title">Mitra</h2>
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <p class="card-text">You can manage all mitra, such as editing, deleting, and more.                        </p>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#varyModal"
-                            data-whatever="@mdo">Add Ner Banner</button>
+                        <a href="javascript:;" class="btn btn-primary"onclick="addData()">Add Ner Mitra</a>
                     </div>
                     <div class="row my-4">
                         <!-- Small table -->
@@ -47,18 +46,18 @@
                                                     </div>
                                                 </td>
                                             </tr>
+                                            @foreach ($mitras as $mitra)
+
                                             <tr>
-                                                <td>
-                                                    2
-                                                </td>
-                                                <td>Macromedia</td>
-                                                <td>Macromedia</td>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ $mitra->name }}</td>
+                                                <td> <img src="{{  $mitra->image }}" alt="{{ $mitra->name }}" width="100"></td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">
-                                                        <a href='' class="btn btn-sm btn-dark btn-icon mr-1">
+                                                        <a href='{{ route('mitras.edit', $mitra->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
                                                             <i class="fe fe-edit"></i>
                                                         </a>
-                                                        <form action="" method="POST" class="d-inline">
+                                                        <form action="{{ route('mitras.destroy', $mitra->id) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button class="btn btn-sm btn-dark btn-icon" type="submit">
