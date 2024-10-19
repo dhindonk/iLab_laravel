@@ -29,28 +29,28 @@
       </p>
       <ul class="navbar-nav flex-fill w-100 mb-2">
         <li class="nav-item w-100">
-            <a class="nav-link" href="{{route('memberz')}}">
+            <a class="nav-link" href="{{route('members.index')}}">
               <i class="fe fe-users fe-16"></i> <!-- Ikon untuk "Members" -->
               <span class="ml-3 item-text">Members</span>
             </a>
           </li>
 
           <li class="nav-item w-100">
-            <a class="nav-link" href="{{route('bannerz')}}">
+            <a class="nav-link" href="{{route('banners.index')}}">
               <i class="fe fe-image fe-16"></i> <!-- Ikon untuk "Banner" -->
               <span class="ml-3 item-text">Banner</span>
             </a>
           </li>
 
           <li class="nav-item w-100">
-            <a class="nav-link" href="{{route('projectz')}}">
+            <a class="nav-link" href="{{route('project')}}">
               <i class="fe fe-briefcase fe-16"></i> <!-- Ikon untuk "Project" -->
               <span class="ml-3 item-text">Project</span>
             </a>
           </li>
 
           <li class="nav-item w-100">
-            <a class="nav-link" href="{{route('mitraz')}}">
+            <a class="nav-link" href="{{route('mitras.index')}}">
               <i class="fe fe-thumbs-up fe-16"></i> <!-- Ikon untuk "Mitra" -->
               <span class="ml-3 item-text">Mitra</span>
             </a>

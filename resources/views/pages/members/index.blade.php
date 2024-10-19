@@ -72,12 +72,10 @@
                                                                 </button>
                                                             </form>
 
-                                                            <form action="{{ route('members.destroy', $user->id) }}"
-                                                                method="POST" class="ml-2">
+                                                            <form action="{{ route('members.destroy', $user->id) }}" method="POST" class="ml-2" id="delete-form-{{ $user->id }}">
                                                                 @csrf
                                                                 @method('DELETE')
-                                                                <button class="btn btn-sm btn-danger btn-icon"
-                                                                    type="submit">
+                                                                <button class="btn btn-sm btn-danger btn-icon" type="button" onclick="confirmDelete({{ $user->id }})">
                                                                     <i class="fe fe-trash"></i>
                                                                 </button>
                                                             </form>
@@ -96,4 +94,26 @@
             </div> <!-- .row -->
         </div> <!-- .container-fluid -->
     </main>
+@push('script')
+<script>
+    function confirmDelete(userId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form if the user confirms
+                document.getElementById('delete-form-' + userId).submit();
+            }
+        });
+    }
+</script>
+
+@endpush
 @endsection

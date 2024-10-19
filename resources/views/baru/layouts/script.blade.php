@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('template') }}/js/jquery.min.js"></script>
 <script src="{{ asset('template') }}/js/popper.min.js"></script>
 <script src="{{ asset('template') }}/js/moment.min.js"></script>
@@ -32,6 +33,36 @@
 <script src='{{ asset('template') }}/js/quill.min.js'></script>
 <script src='{{ asset('template') }}/js/jquery.dataTables.min.js'></script>
 <script src='{{ asset('template') }}/js/dataTables.bootstrap4.min.js'></script>
+<script>
+    @if (session('success'))
+        Swal.fire({
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            timer: 2000,
+            timerProgressBar: true,
+            willClose: () => {
+               
+            }
+        });
+    @endif
+
+    @if (session('error'))
+        Swal.fire({
+            title: 'Error!',
+            text: '{{ session('error') }}',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            timer: 2000,
+            timerProgressBar: true,
+            willClose: () => {
+               
+            }
+        });
+    @endif
+</script>
+
 <script>
   $('.select2').select2(
   {

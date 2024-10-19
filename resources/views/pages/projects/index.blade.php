@@ -44,10 +44,10 @@
                                                         <a href='{{ route('view.project', $project->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
                                                             <i class="fe fe-eye"></i>
                                                         </a>
-                                                        <form action="{{ route('del_project', $project->id) }}" method="POST" class="d-inline">
+                                                        <form action="{{ route('del_project', $project->id) }}" method="POST" class="d-inline" id="delete-form-{{ $project->id }}">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
+                                                            <button class="btn btn-sm btn-dark btn-icon" type="button" onclick="confirmDelete({{ $project->id }})">
                                                                 <i class="fe fe-trash-2"></i>
                                                             </button>
                                                         </form>
@@ -65,4 +65,26 @@
             </div> <!-- .row -->
         </div> <!-- .container-fluid -->
     </main>
+    @push('script')
+    <script>
+        function confirmDelete(projectId) {
+            Swal.fire({
+                title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Submit the form if the user confirms
+                    document.getElementById('delete-form-' + projectId).submit();
+                }
+            });
+        }
+    </script>
+
+    @endpush
 @endsection

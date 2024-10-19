@@ -38,13 +38,14 @@
                                                         <a href='{{ route('banners.edit', $banner->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
                                                             <i class="fe fe-edit"></i>
                                                         </a>
-                                                        <form action="{{ route('banners.destroy', $banner->id) }}" method="POST" class="d-inline">
+                                                        <form id="delete-form-{{ $banner->id }}" action="{{ route('banners.destroy', $banner->id) }}" method="POST" class="d-inline">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="submit">
+                                                            <button type="button" class="btn btn-sm btn-dark btn-icon" onclick="confirmDelete({{ $banner->id }})">
                                                                 <i class="fe fe-trash-2"></i>
                                                             </button>
                                                         </form>
+
                                                     </div>
                                                 </td>
                                             </tr>
@@ -87,4 +88,25 @@
             </div>
           </div>
     </main>
+
+    @push('script')
+    <script>
+        function confirmDelete(bannerId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This action cannot be undone!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + bannerId).submit(); // Kirim form secara manual
+                }
+            })
+        }
+    </script>
+
+    @endpush
 @endsection
