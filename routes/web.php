@@ -16,7 +16,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::resource('members', MemberController::class);
     Route::patch('members/{member}/verify', [MemberController::class, 'verify'])->name('members.verify');
-    Route::resource('banners', BannersController::class);
+    Route::resource('banners', BannersController::class);   
     Route::resource('mitras', MitraController::class);
     Route::get('projects', [ProjectController::class, 'index'])->name('project');
     Route::get('projects/{id}', [ProjectController::class, 'show'])->name('view.project');

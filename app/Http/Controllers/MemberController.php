@@ -22,7 +22,7 @@ class MemberController extends Controller
 
     public function create()
     {
-        return view('pages.members.create');
+        return view('baru.pages.create');
     }
 
     public function store(Request $request)
