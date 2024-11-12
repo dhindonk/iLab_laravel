@@ -1,4 +1,4 @@
-@extends('baru.layouts.main')
+@extends('layouts.main')
 @section('content')
     <div class="main-content">
         <section class="section">

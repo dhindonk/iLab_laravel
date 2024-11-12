@@ -1,4 +1,4 @@
-@extends('baru.layouts.main')
+@extends('layouts.main')
 @section('content')
     <main role="main" class="main-content">
         <div class="container-fluid">
@@ -19,8 +19,8 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 10px">No</th>
-                                                <th>Verified</th>
-                                                <th>Verified</th>
+                                                <th>Name</th>
+                                                <th>Image</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -29,7 +29,7 @@
 
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $mitra->image }}</td>
+                                                <td>{{ $mitra->name }}</td>
                                                 <td> <img src="{{ asset('images/mitras/'. $mitra->image) }}" alt="{{ $mitra->name }}" width="100"></td>
                                                 <td>
                                                     <div class="d-flex justify-content-center">

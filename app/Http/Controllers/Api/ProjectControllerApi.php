@@ -32,6 +32,8 @@ class ProjectControllerApi extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'list_job' => 'required|array',
             'list_job.*.job_name' => 'required|string',
+            'members' => 'required|array',
+            'members.*' => 'exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -45,18 +47,70 @@ class ProjectControllerApi extends Controller
             'start_date' => $request->start_date,
             'end_date' => $request->end_date,
             'user_id' => $request->user()->id,
-            'list_job' => json_encode($request->list_job), // Disimpan dalam format JSON
+            'list_job' => json_encode($request->list_job),
         ]);
 
-        // Tambahkan user yang membuat project sebagai anggota
-        $project->members()->attach($request->user()->id);
+        // Tambahkan semua member yang dipilih ke project
+        $project->members()->attach($request->members);
+
+        // Tambahkan creator project juga sebagai member jika belum ada
+        if (!in_array($request->user()->id, $request->members)) {
+            $project->members()->attach($request->user()->id);
+        }
+
+        // Inisialisasi progress untuk setiap member
+        foreach ($project->members as $member) {
+            $jobs = json_decode($project->list_job);
+            foreach ($jobs as $index => $job) {
+                ProjectProgress::create([
+                    'project_id' => $project->id,
+                    'user_id' => $member->id,
+                    'job_index' => $index,
+                    'is_completed' => false
+                ]);
+            }
+        }
 
         return response()->json([
             'message' => 'Project created successfully',
-            'project' => $project
+            'project' => $project->load('members', 'progress')
         ], 201);
     }
 
+    public function addMember(Request $request, Project $project)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        // Cek apakah user sudah menjadi member
+        if ($project->members()->where('user_id', $request->user_id)->exists()) {
+            return response()->json(['error' => 'User already a member of this project'], 422);
+        }
+
+        // Tambahkan member baru
+        $project->members()->attach($request->user_id);
+
+        // Inisialisasi progress untuk member baru
+        $jobs = json_decode($project->list_job);
+        foreach ($jobs as $index => $job) {
+            ProjectProgress::create([
+                'project_id' => $project->id,
+                'user_id' => $request->user_id,
+                'job_index' => $index,
+                'is_completed' => false
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Member added successfully',
+            'project' => $project->load('members', 'progress')
+        ]);
+    }
 
     /**
      * Update the progress of a project.

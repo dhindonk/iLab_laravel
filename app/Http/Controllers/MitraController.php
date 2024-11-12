@@ -50,21 +50,29 @@ class MitraController extends Controller
     /**
      * Update the specified banner in storage.
      */
-    public function update(Request $request, Mitra $banner)
+    public function update(Request $request, Mitra $mitra)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        $data = [
+            'name' => $request->name
+        ];
+
         if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($mitra->image && file_exists(public_path('images/mitras/' . $mitra->image))) {
+                unlink(public_path('images/mitras/' . $mitra->image));
+            }
+
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images/mitras/'), $imageName);
-            $banner->image = $imageName;
+            $data['image'] = $imageName;
         }
 
-        $banner->name = $request->name;
-        $banner->save();
+        $mitra->update($data);
 
         return redirect()->route('mitras.index')
             ->with('success', 'Mitra updated successfully.');

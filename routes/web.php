@@ -16,7 +16,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::resource('members', MemberController::class);
     Route::patch('members/{member}/verify', [MemberController::class, 'verify'])->name('members.verify');
-    Route::resource('banners', BannersController::class);   
+    Route::resource('banners', BannersController::class);
     Route::resource('mitras', MitraController::class);
     Route::get('projects', [ProjectController::class, 'index'])->name('project');
     Route::get('projects/{id}', [ProjectController::class, 'show'])->name('view.project');
@@ -27,28 +27,6 @@ Route::get('/', function () {
     return view('pages.auth.auth-login');
 })->middleware('guest');
 
-Route::get('/baru', function () {
-    return view('baru.pages.index');
-})->name('baruz');
 
-Route::get('/member', function () {
-    return view('baru.pages.member');
-})->name('memberz');
-
-Route::get('/banner', function () {
-    return view('baru.pages.banner');
-})->name('bannerz');
-
-Route::get('/project', function () {
-    return view('baru.pages.project');
-})->name('projectz');
-
-Route::get('/mitra', function () {
-    return view('baru.pages.mitra');
-})->name('mitraz');
-
-Route::get('/create-member', function () {
-    return view('baru.pages.create');
-})->name('create');
 
 

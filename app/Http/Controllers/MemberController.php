@@ -22,7 +22,7 @@ class MemberController extends Controller
 
     public function create()
     {
-        return view('baru.pages.create');
+        return view('pages.members.create');
     }
 
     public function store(Request $request)
@@ -88,12 +88,12 @@ class MemberController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'email' => 'required|email|unique:users,email,' . $id, // Email harus unik, kecuali email yang sedang diupdate
-            'password' => 'nullable|min:8', 
+            'email' => 'required|email|unique:users,email,' . $id,
+            'password' => 'nullable|min:8',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'full_name' => 'required',
             'gender' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|unique:profiles,phone,' . $user->profile->id,
             'residential_address' => 'required',
             'status' => 'required',
             'country_of_origin' => 'required',
@@ -111,8 +111,13 @@ class MemberController extends Controller
 
         $user->save();
 
-        $imageName = $user->profile->image; 
+        $imageName = $user->profile->image;
         if ($request->hasFile('image')) {
+            if ($imageName && !in_array($imageName, ['male.png', 'female.png']) &&
+                file_exists(public_path('images/foto_profile/' . $imageName))) {
+                unlink(public_path('images/foto_profile/' . $imageName));
+            }
+
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images/foto_profile/'), $imageName);
         }
@@ -131,6 +136,7 @@ class MemberController extends Controller
             'university_address' => $request->university_address,
             'university_country' => $request->university_country,
         ]);
+
         return redirect()->route('members.index')->with('success', 'User and Profile updated successfully');
     }
 
