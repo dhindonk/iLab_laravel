@@ -1,59 +1,63 @@
 @extends('layouts.main')
+
+@section('title', 'Projects')
+
 @section('content')
-    <main role="main" class="main-content">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <h2 class="mb-2 page-title">Project</h2>
-                    <p class="card-text">Kelola semua proyek dan lihat progressnya.                    </p>
-                    <div class="row my-4">
-                        <!-- Small table -->
-                        <div class="col-md-12">
-                            <div class="card shadow">
-                                <div class="card-body">
-                                    <!-- table -->
-                                    <table class="table datatables" id="dataTable-1">
+<main role="main" class="main-content">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <h2 class="mb-2 page-title">Mitra</h2>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <p class="card-text">You can manage all mitra, such as editing, deleting, and more.                        </p>
+                    <a href="{{ route('mitras.create') }}" class="btn btn-primary">Add Ner Banner</a>
+                </div>
+                <div class="row my-4">
+                    <!-- Small table -->
+                    <div class="col-md-12">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <table class="table datatables" id="dataTable-1">
                                         <thead>
                                             <tr>
-                                                <th style="width: 10px">No</th>
-                                                <th>Nama Proyek</th>
-                                                <th>Ketua Proyek</th>
-                                                <th>Progress (%)</th>
+                                                <th>Nama Project</th>
+                                                <th>Project Manager</th>
+                                                <th>Tanggal Mulai</th>
+                                                <th>Tanggal Selesai</th>
+                                                <th>Jumlah Job</th>
+                                                <th>Jumlah Member</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($projects as $project)
-                                            <tr>
-                                                <td>
-                                                    {{ $loop->iteration }}
-                                                </td>
-                                                <td>{{ $project->name }}</td>
-                                                <td>{{ $project->creator->full_name }}</td>
-                                                <td>                                                    @php
-                                                    $totalJobs = count(json_decode($project->list_job));
-                                                    $completedJobs = $project->progress
-                                                        ->where('is_completed', true)
-                                                        ->count();
-                                                    $progress =
-                                                        $totalJobs > 0 ? ($completedJobs / $totalJobs) * 100 : 0;
-                                                @endphp
-                                                {{ number_format($progress, 2) }}%</td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='{{ route('view.project', $project->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-eye"></i>
+                                            @foreach($projects as $project)
+                                                <tr>
+                                                    <td>{{ $project->name }}</td>
+                                                    <td>{{ $project->creator->email }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($project->start_date)->format('d M Y') }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($project->end_date)->format('d M Y') }}</td>
+                                                    <td>{{ count(json_decode($project->list_job)) }}</td>
+                                                    <td>{{ $project->members->count() }}</td>
+                                                    <td>
+                                                        <a href="{{ route('project.show', $project->id) }}"
+                                                           class="btn btn-info btn-sm">
+                                                            Detail
                                                         </a>
-                                                        <form action="{{ route('del_project', $project->id) }}" method="POST" class="d-inline" id="delete-form-{{ $project->id }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button class="btn btn-sm btn-dark btn-icon" type="button" onclick="confirmDelete({{ $project->id }})">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                                        @if(auth()->user()->id === $project->user_id)
+                                                            <form action="{{ route('project.destroy', $project->id) }}"
+                                                                  method="POST"
+                                                                  class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit"
+                                                                        class="btn btn-danger btn-sm"
+                                                                        onclick="return confirm('Yakin ingin menghapus?')">
+                                                                    Hapus
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
@@ -63,28 +67,12 @@
                     </div> <!-- end section -->
                 </div> <!-- .col-12 -->
             </div> <!-- .row -->
-        </div> <!-- .container-fluid -->
-    </main>
-    @push('script')
-    <script>
-        function confirmDelete(projectId) {
-            Swal.fire({
-                title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Submit the form if the user confirms
-                    document.getElementById('delete-form-' + projectId).submit();
-                }
-            });
-        }
-    </script>
-
-    @endpush
+        </div>
+    </div>
+</main>
 @endsection
+
+@push('scripts')
+    <!-- JS Libraies -->
+    <script src="{{ asset('library/selectric/public/jquery.selectric.min.js') }}"></script>
+@endpush

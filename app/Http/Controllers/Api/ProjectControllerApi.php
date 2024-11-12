@@ -32,8 +32,6 @@ class ProjectControllerApi extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
             'list_job' => 'required|array',
             'list_job.*.job_name' => 'required|string',
-            'members' => 'required|array',
-            'members.*' => 'exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -50,65 +48,52 @@ class ProjectControllerApi extends Controller
             'list_job' => json_encode($request->list_job),
         ]);
 
-        // Tambahkan semua member yang dipilih ke project
-        $project->members()->attach($request->members);
-
-        // Tambahkan creator project juga sebagai member jika belum ada
-        if (!in_array($request->user()->id, $request->members)) {
-            $project->members()->attach($request->user()->id);
-        }
-
-        // Inisialisasi progress untuk setiap member
-        foreach ($project->members as $member) {
-            $jobs = json_decode($project->list_job);
-            foreach ($jobs as $index => $job) {
-                ProjectProgress::create([
-                    'project_id' => $project->id,
-                    'user_id' => $member->id,
-                    'job_index' => $index,
-                    'is_completed' => false
-                ]);
-            }
-        }
+        // PM otomatis jadi member
+        $project->members()->attach($request->user()->id);
 
         return response()->json([
             'message' => 'Project created successfully',
-            'project' => $project->load('members', 'progress')
+            'project' => $project->load('members')
         ], 201);
     }
 
-    public function addMember(Request $request, Project $project)
+    // Tambah method baru untuk assign job
+    public function assignJob(Request $request, Project $project)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id'
+            'user_id' => 'required|exists:users,id',
+            'job_index' => 'required|numeric',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
         }
 
-        // Cek apakah user sudah menjadi member
-        if ($project->members()->where('user_id', $request->user_id)->exists()) {
-            return response()->json(['error' => 'User already a member of this project'], 422);
+        // Cek apakah user adalah member project
+        if (!$project->members()->where('user_id', $request->user_id)->exists()) {
+            return response()->json(['error' => 'User bukan member project ini'], 422);
         }
 
-        // Tambahkan member baru
-        $project->members()->attach($request->user_id);
+        // Hapus assignment lama jika ada
+        ProjectProgress::where('project_id', $project->id)
+            ->where('job_index', $request->job_index)
+            ->delete();
 
-        // Inisialisasi progress untuk member baru
-        $jobs = json_decode($project->list_job);
-        foreach ($jobs as $index => $job) {
-            ProjectProgress::create([
+        // Update atau buat assignment baru
+        $progress = ProjectProgress::updateOrCreate(
+            [
                 'project_id' => $project->id,
+                'job_index' => $request->job_index
+            ],
+            [
                 'user_id' => $request->user_id,
-                'job_index' => $index,
                 'is_completed' => false
-            ]);
-        }
+            ]
+        );
 
         return response()->json([
-            'message' => 'Member added successfully',
-            'project' => $project->load('members', 'progress')
+            'message' => 'Job berhasil diassign',
+            'progress' => $progress
         ]);
     }
 
@@ -119,10 +104,22 @@ class ProjectControllerApi extends Controller
     {
         $user = $request->user();
 
-        $progress = ProjectProgress::updateOrCreate(
-            ['project_id' => $project->id, 'user_id' => $user->id, 'job_index' => $request->job_index],
-            ['is_completed' => $request->is_completed]
-        );
+        // Cek apakah job ini dimiliki oleh user yang request
+        $progress = ProjectProgress::where('project_id', $project->id)
+            ->where('job_index', $request->job_index)
+            ->where('user_id', $user->id)
+            ->first();
+
+        if (!$progress) {
+            return response()->json([
+                'error' => 'Anda tidak memiliki akses ke job ini'
+            ], 403);
+        }
+
+        // Update progress
+        $progress->update([
+            'is_completed' => $request->is_completed
+        ]);
 
         return response()->json($progress);
     }
@@ -136,5 +133,59 @@ class ProjectControllerApi extends Controller
         $completedJobs = $project->progress()->where('user_id', $userId)->where('is_completed', true)->count();
 
         return ($completedJobs / $totalJobs) * 100;
+    }
+
+    // Tambahkan method addMember
+    public function addMember(Request $request, Project $project)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        // Cek apakah user sudah menjadi member
+        if ($project->members()->where('user_id', $request->user_id)->exists()) {
+            return response()->json(['error' => 'User sudah menjadi member project ini'], 422);
+        }
+
+        // Tambahkan member baru
+        $project->members()->attach($request->user_id);
+
+        return response()->json([
+            'message' => 'Member berhasil ditambahkan',
+            'project' => $project->load('members')
+        ]);
+    }
+
+    // Tambahkan juga method getProjectMembers
+    public function getProjectMembers(Project $project)
+    {
+        return response()->json([
+            'members' => $project->members
+        ]);
+    }
+
+    // Tambahkan method removeMember
+    public function removeMember(Project $project, $userId)
+    {
+        // Cek apakah user adalah member
+        if (!$project->members()->where('user_id', $userId)->exists()) {
+            return response()->json(['error' => 'User bukan member project ini'], 422);
+        }
+
+        // Hapus semua progress job user di project ini
+        ProjectProgress::where('project_id', $project->id)
+            ->where('user_id', $userId)
+            ->delete();
+
+        // Hapus user dari project
+        $project->members()->detach($userId);
+
+        return response()->json([
+            'message' => 'Member berhasil dihapus dari project'
+        ]);
     }
 }
