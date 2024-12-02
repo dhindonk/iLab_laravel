@@ -13,7 +13,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::with(['creator', 'members', 'progress'])->get();
+        $projects = Project::with(['creator', 'members', 'progress'])
+            ->orderBy('id', 'desc')
+            ->get();
 
         return view('pages.projects.index', compact('projects'));
     }
@@ -32,16 +34,15 @@ class ProjectController extends Controller
 
         if ($project->members) {
             foreach ($project->members as $member) {
-                $totalJobs = count($listJob);
-                $completedJobs = $project->progress()
-                    ->where('user_id', $member->id)
-                    ->where('is_completed', true)
-                    ->count();
+                // Hitung total pekerjaan yang ditugaskan kepada member ini
+                $assignedJobs = $project->progress()->where('user_id', $member->id)->get();
+                $totalJobs = $assignedJobs->count(); // Total pekerjaan yang ditugaskan
+                $completedJobs = $assignedJobs->where('is_completed', true)->count(); // Pekerjaan yang telah diselesaikan oleh member
 
                 $memberProgress[$member->id] = [
                     'percentage' => $totalJobs > 0 ? ($completedJobs / $totalJobs) * 100 : 0,
                     'completed' => $completedJobs,
-                    'total' => $totalJobs
+                    'total' => $totalJobs // Total pekerjaan yang harus dikerjakan
                 ];
             }
         }

@@ -9,7 +9,7 @@ class Project extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'start_date', 'end_date', 'user_id', 'list_job'];
+    protected $fillable = ['name', 'description', 'start_date', 'end_date', 'user_id', 'list_job', 'status'];
 
     public function creator()
     {
@@ -24,5 +24,10 @@ class Project extends Model
     public function progress()
     {
         return $this->hasMany(ProjectProgress::class);
+    }
+
+    public function joinRequests()
+    {
+        return $this->hasMany(ProjectJoinRequest::class);
     }
 }

@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $user = User::factory()->create([
-            'email' => '123@gmail.com',
+            'email' => 'admin@official.co.id',
             'password' => Hash::make('12345678'),
             'role' => 'admin',
             'verify' => true,
@@ -42,10 +42,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call(
             [
-                BannersSeeder::class,
-                MitraSeeder::class,
-                UserSeeder::class,
-                ProfileSeeder::class,
+                // BannersSeeder::class,
+                // MitraSeeder::class,
+                // UserSeeder::class,
+                // ProfileSeeder::class,
                 ProjectSeeder::class,
             ]
         );

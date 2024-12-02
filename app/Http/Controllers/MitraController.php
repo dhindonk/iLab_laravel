@@ -11,7 +11,7 @@ class MitraController extends Controller
 {
     public function index()
     {
-        $mitras = Mitra::paginate(10);
+        $mitras = Mitra::orderBy('id', 'desc')->get();
         return view('pages.mitra.index', compact('mitras'));
     }
 

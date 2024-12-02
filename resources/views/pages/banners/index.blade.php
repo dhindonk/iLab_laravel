@@ -6,9 +6,8 @@
                 <div class="col-12">
                     <h2 class="mb-2 page-title">Banner</h2>
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <p class="card-text">You can manage all banners, such as editing, deleting, and more.
-                        </p>
-                        <a href="{{ route('banners.create') }}" class="btn btn-primary" >Add Ner Banner</a>
+                        <p class="card-text">You can manage all banners, such as editing, deleting, and more.</p>
+                        <a href="{{ route('banners.create') }}" class="btn btn-primary">Add New Banner</a>
                     </div>
                     <div class="row my-4">
                         <!-- Small table -->
@@ -26,87 +25,127 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach ($banners as $banner )
-                                            <tr>
-                                                <td>
-                                                    {{ $loop->iteration }}
-                                                </td>
-                                                <td>{{ $banner->name }}</td>
-                                                <td><img src="{{ asset('images/banners/'. $banner->image) }}" alt="{{ $banner->name }}" width="100"></td>
-                                                <td>
-                                                    <div class="d-flex justify-content-center">
-                                                        <a href='{{ route('banners.edit', $banner->id) }}' class="btn btn-sm btn-dark btn-icon mr-1">
-                                                            <i class="fe fe-edit"></i>
-                                                        </a>
-                                                        <form id="delete-form-{{ $banner->id }}" action="{{ route('banners.destroy', $banner->id) }}" method="POST" class="d-inline">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="button" class="btn btn-sm btn-dark btn-icon" onclick="confirmDelete({{ $banner->id }})">
-                                                                <i class="fe fe-trash-2"></i>
-                                                            </button>
-                                                        </form>
-
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            @foreach ($banners as $banner)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $banner->name }}</td>
+                                                    <td><img src="{{ asset('images/banners/' . $banner->image) }}"
+                                                            alt="{{ $banner->name }}" width="100"></td>
+                                                    <td>
+                                                        <div class="d-flex justify-content-center">
+                                                            <a href='{{ route('banners.edit', $banner->id) }}'
+                                                                class="btn btn-sm btn-dark btn-icon mr-1">
+                                                                <i class="fe fe-edit"></i>
+                                                            </a>
+                                                            <form id="delete-form-{{ $banner->id }}"
+                                                                action="{{ route('banners.destroy', $banner->id) }}"
+                                                                method="POST" class="d-inline">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="button" class="btn btn-sm btn-dark btn-icon"
+                                                                    onclick="confirmDelete({{ $banner->id }})">
+                                                                    <i class="fe fe-trash-2"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
-                        </div> <!-- simple table -->
-                    </div> <!-- end section -->
-                </div> <!-- .col-12 -->
-            </div> <!-- .row -->
-        </div> <!-- .container-fluid -->
-        <div class="modal fade" id="varyModal" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="varyModalLabel">New message</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <form>
-                    <div class="form-group">
-                      <label for="recipient-name" class="col-form-label">Banner Name:</label>
-                      <input type="text" class="form-control" id="recipient-name">
+                        </div>
                     </div>
-                    <div class="form-group">
-                      <label for="message-text" class="col-form-label">Upload Banner Image:</label>
-                      <input type="file" class="form-control" id="recipient-name">
-                    </div>
-                  </form>
                 </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn mb-2 btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn mb-2 btn-primary">Create Banner</button>
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
     </main>
+@endsection
 
-    @push('script')
+@push('script')
     <script>
+        $(document).ready(function() {
+            if ($.fn.DataTable.isDataTable('#dataTable-1')) {
+                $('#dataTable-1').DataTable().destroy();
+            }
+
+            $('#dataTable-1').DataTable({
+                processing: true,
+                serverSide: false,
+                paging: true,
+                pageLength: 10,
+                lengthMenu: [
+                    [10, 25, 50, -1],
+                    [10, 25, 50, "All"]
+                ],
+                order: [
+                    [0, 'desc']
+                ],
+                columnDefs: [{
+                        orderable: false,
+                        targets: [2, 3]
+                    } // Disable sorting for image and action columns
+                ],
+                language: {
+                    paginate: {
+                        previous: "<i class='fe fe-arrow-left'></i>",
+                        next: "<i class='fe fe-arrow-right'></i>"
+                    }
+                },
+                drawCallback: function() {
+                    $('.dataTables_paginate > .pagination').addClass('pagination-separated');
+                }
+            });
+        });
+
         function confirmDelete(bannerId) {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "This action cannot be undone!",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('delete-form-' + bannerId).submit(); // Kirim form secara manual
+                    document.getElementById('delete-form-' + bannerId).submit();
                 }
-            })
+            });
         }
     </script>
+@endpush
 
-    @endpush
-@endsection
+@push('style')
+    <style>
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 0.5em 1em;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #6D0077;
+            color: white !important;
+            border: 1px solid #6D0077;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #f8f9fa;
+            color: #6D0077 !important;
+        }
+
+        .dataTables_wrapper .dataTables_length select {
+            padding: 0.375rem 1.75rem 0.375rem 0.75rem;
+        }
+
+        .dataTables_wrapper .dataTables_filter input {
+            margin-left: 0.5em;
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+    </style>
+@endpush

@@ -289,3 +289,49 @@
   gtag('js', new Date());
   gtag('config', 'UA-56159088-1');
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get theme toggles
+    const toggle = document.querySelector('#modeSwitcher');
+    const html = document.querySelector('html');
+    const lightTheme = document.querySelector('#lightTheme');
+    const darkTheme = document.querySelector('#darkTheme');
+
+    // Get saved theme from localStorage
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    
+    // Apply saved theme on page load
+    if (savedTheme === 'dark') {
+        lightTheme.disabled = true;
+        darkTheme.disabled = false;
+        toggle.setAttribute('data-mode', 'dark');
+        toggle.querySelector('i').classList.remove('fe-sun');
+        toggle.querySelector('i').classList.add('fe-moon');
+    }
+
+    // Handle theme toggle
+    toggle.addEventListener('click', function(e) {
+        e.preventDefault();
+        const currentMode = this.getAttribute('data-mode');
+        
+        if (currentMode === 'light') {
+            // Switch to dark mode
+            lightTheme.disabled = true;
+            darkTheme.disabled = false;
+            this.setAttribute('data-mode', 'dark');
+            this.querySelector('i').classList.remove('fe-sun');
+            this.querySelector('i').classList.add('fe-moon');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            // Switch to light mode
+            lightTheme.disabled = false;
+            darkTheme.disabled = true;
+            this.setAttribute('data-mode', 'light');
+            this.querySelector('i').classList.remove('fe-moon');
+            this.querySelector('i').classList.add('fe-sun');
+            localStorage.setItem('theme', 'light');
+        }
+    });
+});
+</script>
